@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Akasa Air Data Platform</h1>
+
+<hr>
+
+<h3>1. Upload Customer & Order Files</h3>
+
+<form action="/ui/upload" method="post" enctype="multipart/form-data">
+    <label>Select files (CSV + XML):</label><br><br>
+    <input type="file" name="files" multiple required><br><br>
+    <button type="submit">Upload Files</button>
+</form>
+
+<hr>
+
+<h3>2. Choose Data Processing Mode</h3>
+
+<form action="/ui/dashboard" method="get">
+    <label>Select processing engine:</label>
+    <select name="engine">
+        <option value="db">MySQL (DB Mode)</option>
+        <option value="pandas">Pandas (In-Memory)</option>
+        <option value="spark">Spark (Distributed)</option>
+    </select>
+    <br><br>
+    <button type="submit">View Dashboard</button>
+</form>
+
+<hr>
+
+<h3>3. Run Airflow Pipeline</h3>
+
+<form action="/ui/trigger-dag" method="post">
+    <button type="submit">Trigger Airflow DAG</button>
+</form>
+
+{% endblock %}

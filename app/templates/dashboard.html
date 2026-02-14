@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 1400px;">
+    <h2 class="text-center mb-4">
+        KPI Dashboard ({{ engine|capitalize }} Mode)
+    </h2>
+
+    <!-- Engine Switch -->
+    <div class="text-center mb-4">
+        <form action="/dashboard" method="get" class="d-inline-flex">
+            <label class="me-2 fw-bold">Engine:</label>
+            <select name="engine" class="form-select form-select-sm me-3" style="width:150px;">
+                <option value="db" {% if engine == "db" %}selected{% endif %}>MySQL (DB)</option>
+                <option value="pandas" {% if engine == "pandas" %}selected{% endif %}>Pandas</option>
+                <option value="spark" {% if engine == "spark" %}selected{% endif %}>Spark</option>
+            </select>
+            <button class="btn btn-primary btn-sm">Refresh</button>
+        </form>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-4">
+        {% if kpis.cards %}
+            {% for card in kpis.cards %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm p-3" style="border-radius: 12px;">
+                    <h6 class="fw-bold text-center mb-2">{{ card.title }}</h6>
+                    <div class="text-center" style="font-size: 22px; font-weight: bold;">{{ card.value }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="mt-4"></div>
+
+    <!-- Charts -->
+    <div class="row g-4">
+        {% if kpis.charts %}
+            {% for chart in kpis.charts %}
+            <div class="col-md-6 col-lg-6">
+                <div class="card shadow-sm p-3" style="border-radius: 12px;">
+                    <h6 class="fw-bold mb-2">{{ chart.title }}</h6>
+                    <div id="{{ chart.id }}" style="height: 320px;"></div>
+                    <script>
+                        (function() {
+                            const fig = JSON.parse({{ chart.fig_json | tojson | safe }});
+                            const target = document.getElementById("{{ chart.id }}");
+                            const data = fig.data || [];
+                            const layout = fig.layout || {};
+                            layout.margin = {l: 30, r: 10, t: 30, b: 30};
+                            Plotly.newPlot(target, data, layout, {displayModeBar: false, responsive: true});
+                        })();
+                    </script>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Reduce plotly graph margins -->
+<style>
+    .plot-container,
+    .svg-container {
+        height: 300px !important;
+    }
+    .js-plotly-plot .plotly .main-svg {
+        margin: 0 !important;
+    }
+</style>
+
+{% endblock %}

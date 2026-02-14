@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Upload Data & Run Pipeline</h2>
+
+<form action="/api/upload" method="post" enctype="multipart/form-data">
+    <label><b>Select files (customers.csv and orders.xml):</b></label><br>
+    <input type="file" name="files" multiple required><br><br>
+    <button type="submit" style="padding:8px 20px;">⬆️ Upload Files</button>
+    <p style="font-size: 12px; color: #555; margin-top: 6px;">Uploads to <code>data/upload</code></p>
+    <hr>
+    <label><b>Select Mode:</b></label><br>
+    <select name="mode" form="runForm" required>
+        <option value="db">Database (SQL)</option>
+        <option value="pandas">Pandas</option>
+        <option value="spark">Spark</option>
+    </select>
+    <br><br>
+    <button type="submit" form="runForm" style="padding:8px 20px;">🚀 Run Pipeline</button>
+</form>
+
+<form id="runForm" action="/api/run" method="post"></form>
+
+<br><hr><br>
+
+<form action="/dashboard" method="get">
+    <label><b>Dashboard Mode:</b></label><br>
+    <select name="engine" required>
+        <option value="db">Database (SQL)</option>
+        <option value="pandas">Pandas</option>
+        <option value="spark">Spark</option>
+    </select>
+
+    <br><br>
+    <button type="submit" style="padding:8px 20px;">📊 Open Dashboard</button>
+</form>
+
+{% endblock %}
